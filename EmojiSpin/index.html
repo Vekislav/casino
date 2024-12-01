@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emoji Slot Machine</title>
+  <style>
+    body {
+      background-color: #111;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .slot-machine {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .slot {
+      width: 80px;
+      height: 80px;
+      background-color: #222;
+      border: 2px solid #444;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin: 0 10px;
+    }
+
+    .controls {
+      text-align: center;
+    }
+
+    .balance {
+      margin-bottom: 20px;
+      font-size: 1.2rem;
+    }
+
+    button {
+      background-color: #333;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #555;
+    }
+
+    input {
+      width: 100px;
+      text-align: center;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="balance">Balance: <span id="balance">$100</span></div>
+  <div class="slot-machine">
+    <div class="slot" id="slot1">:cherries:</div>
+    <div class="slot" id="slot2">:cherries:</div>
+    <div class="slot" id="slot3">:cherries:</div>
+    <div class="slot" id="slot4">:cherries:</div>
+    <div class="slot" id="slot5">:cherries:</div>
+  </div>
+  <div class="controls">
+    <input type="number" id="betSize" placeholder="Bet Size" min="1" value="1">
+    <button id="spinButton">Spin</button>
+  </div>
+
+  <script>
+    const balanceElement = document.getElementById("balance");
+    const betSizeInput = document.getElementById("betSize");
+    const spinButton = document.getElementById("spinButton");
+    const slots = [
+      document.getElementById("slot1"),
+      document.getElementById("slot2"),
+      document.getElementById("slot3"),
+      document.getElementById("slot4"),
+      document.getElementById("slot5"),
+    ];
+
+    const emojis = ["🎀", "🔥", "🍋", "⭐", "🍒", "🍇", "🔔"];
+    let balance = localStorage.getItem("slotBalance") ? parseInt(localStorage.getItem("slotBalance")) : 100;
+
+    function updateBalance() {
+      balanceElement.textContent = `$${balance}`;
+      localStorage.setItem("slotBalance", balance);
+    }
+
+    function spin() {
+      const bet = parseInt(betSizeInput.value);
+      if (isNaN(bet) || bet < 0 || bet > balance) {
+        alert("Invalid bet size.");
+        return;
+      }
+
+      balance -= bet;
+
+      const results = [];
+      slots.forEach((slot) => {
+        const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+        slot.textContent = randomEmoji;
+        results.push(randomEmoji);
+      });
+
+      // Simple win condition: all slots match
+      if (new Set(results).size === 1) {
+        const winnings = bet * 10; // Example: 10x payout
+        balance += winnings;
+        alert(`Jackpot! You won $${winnings}`);
+      }
+
+      updateBalance();
+    }
+
+    spinButton.addEventListener("click", spin);
+    updateBalance();
+  </script>
+</body>
+</html>
