@@ -26,7 +26,7 @@ function loadBalance() {
 
 // Save balance to localStorage
 function saveBalance() {
-  localStorage.setItem("blackjackBalance", balance);
+  localStorage.setItem("slotBalance", balance);
 }
 
 // Update balance display
