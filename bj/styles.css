@@ -1,0 +1,126 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #2d3436;
+  color: #dfe6e9;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+#game-container {
+  background-color: #1e272e;
+  border-radius: 15px;
+  padding: 20px;
+  width: 90%;
+  max-width: 800px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+  display: flex;
+}
+
+.controls-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 15px;
+  width: 30%;
+  padding: 10px;
+  border-right: 2px solid #636e72;
+}
+
+.controls-section h1 {
+  color: #00cec9;
+  margin-bottom: 10px;
+}
+
+.balance-display {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.balance-display p {
+  font-size: 1.2em;
+}
+
+#bet-amount {
+  padding: 10px;
+  font-size: 1em;
+  border: 2px solid #00cec9;
+  border-radius: 5px;
+  background-color: #2d3436;
+  color: #dfe6e9;
+}
+
+#place-bet-button {
+  background-color: #00cec9;
+  color: #2d3436;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+#place-bet-button:hover {
+  background-color: #0984e3;
+}
+
+button {
+  padding: 10px 15px;
+  font-size: 1em;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #636e72;
+  color: #fff;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #00b894;
+}
+
+.table-section {
+  flex-grow: 1;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.card-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.card {
+  background-color: #2d3436;
+  border: 2px solid #dfe6e9;
+  border-radius: 8px;
+  padding: 15px;
+  font-size: 1.5em;
+  color: #fff;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: scale(1.1);
+}
+
+.score {
+  margin-top: 10px;
+  font-size: 1.2em;
+}
+
+#result {
+  margin-top: 15px;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #fdcb6e;
+}
