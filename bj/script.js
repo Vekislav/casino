@@ -19,7 +19,7 @@ let bet = 0;
 
 // Load balance from localStorage
 function loadBalance() {
-  const savedBalance = localStorage.getItem("slotsbalance");
+  const savedBalance = localStorage.getItem("slotBalance");
   balance = savedBalance ? parseInt(savedBalance, 10) : 100;
   updateBalance();
 }
