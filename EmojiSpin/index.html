@@ -80,11 +80,28 @@
       background-color: #222;
       color: white;
     }
+
+    /* Win result display */
+    .win-result {
+      position: absolute;
+      top: 50px; /* Adjust as necessary */
+      font-size: 1.5rem;
+      color: yellow;
+      font-weight: bold;
+      padding: 10px;
+      border-radius: 10px;
+      background-color: rgba(0, 0, 0, 0.7);
+      visibility: hidden; /* Initially hidden */
+      opacity: 0;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
   <div class="jackpot">Jackpot: <span id="jackpot">$0</span></div>
   <div class="balance">Balance: <span id="balance">$100</span></div>
+  <div class="win-result" id="winResult"></div> <!-- Placeholder for win result -->
   <div class="slot-machine">
     <div class="slot" id="slot1">E</div>
     <div class="slot" id="slot2">M</div>
@@ -116,6 +133,7 @@
       document.getElementById("slot4"),
       document.getElementById("slot5"),
     ];
+    const winResultElement = document.getElementById("winResult");
 
     const emojis = ["🔥", "🍋", "⭐", "🍒", "🍇", "🥇", "🥈", "🥉", "🎱", "🎖️", "🎰"];
     let balance = localStorage.getItem("slotBalance") ? parseInt(localStorage.getItem("slotBalance")) : 100;
@@ -146,10 +164,24 @@
       });
     }
 
+    function showWinResult(message) {
+      winResultElement.textContent = message;
+      winResultElement.style.visibility = "visible";
+      winResultElement.style.opacity = "1";
+
+      // Fade out the result after 2 seconds
+      setTimeout(() => {
+        winResultElement.style.opacity = "0";
+        setTimeout(() => {
+          winResultElement.style.visibility = "hidden";
+        }, 500); // Match the fade-out duration
+      }, 2000);
+    }
+
     async function spin() {
       const bet = parseInt(betSizeInput.value);
       if (isNaN(bet) || bet < 0 || bet > balance) {
-        alert("Invalid bet size.");
+        showWinResult("Invalid bet size.");
         return;
       }
 
@@ -174,19 +206,21 @@
       if (frequencies.includes(5)) {
         // Jackpot win: 5 matching emojis
         const winnings = bet * 1000 + jackpot;
-        alert(`Jackpot! You won $${winnings} (including the jackpot of $${jackpot})`);
+        showWinResult(`Jackpot! You won $${winnings} (including the jackpot of $${jackpot})`);
         balance += winnings;
         jackpot = 0; // Reset jackpot
       } else if (frequencies.includes(4)) {
         const winnings = bet * 75;
         balance += winnings;
         jackpot += Math.floor(winnings * 0.5);
-        alert(`Great win! 4 matching emojis, you won $${winnings}`);
+        showWinResult(`Great win! 4 matching emojis, you won $${winnings}`);
       } else if (frequencies.includes(3)) {
         const winnings = bet * 5;
         balance += winnings;
         jackpot += Math.floor(winnings * 0.5);
-        alert(`Nice! 3 matching emojis, you won $${winnings}`);
+        showWinResult(`Nice! 3 matching emojis, you won $${winnings}`);
+      } else {
+        showWinResult("No win this time. Try again!");
       }
 
       updateBalance();
@@ -211,17 +245,8 @@
       if (autoBetInterval) {
         clearInterval(autoBetInterval);
         autoBetInterval = null;
-        alert("AutoBet stopped!");
+        showWinResult("AutoBet stopped!");
       }
-    }
-
-    function randomizeJackpot() {
-      const randomIncrease = Math.floor(Math.random() * 150) + 1; // $1-$150
-      jackpot += randomIncrease;
-      updateJackpot();
-
-      const randomDelay = Math.floor(Math.random() * 10000) + 5000; // 5-15 seconds
-      setTimeout(randomizeJackpot, randomDelay);
     }
 
     spinButton.addEventListener("click", spin);
@@ -230,7 +255,6 @@
 
     updateBalance();
     updateJackpot();
-    randomizeJackpot();
   </script>
 </body>
 </html>
