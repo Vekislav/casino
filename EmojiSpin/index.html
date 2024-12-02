@@ -136,12 +136,12 @@
         alert(`Jackpot! You won $${winnings}`);
       } else if (frequencies.includes(4)) {
         // 4 matching emojis
-        const winnings = bet * 75;
+        const winnings = bet * 20;
         balance += winnings;
         alert(`Great win! 4 matching emojis, you won $${winnings}`);
       } else if (frequencies.includes(3)) {
         // 3 matching emojis
-        const winnings = bet * 5;
+        const winnings = bet * 0.75;
         balance += winnings;
         alert(`Nice! 3 matching emojis, you won $${winnings}`);
       }
