@@ -1,0 +1,168 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #2c3e50;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: white;
+}
+
+.main-container {
+    background-color: #34495e;
+    padding: 30px;
+    border-radius: 15px;
+    width: 500px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #ecf0f1;
+}
+
+.balance-container {
+    font-size: 1.2rem;
+}
+
+.bet-section {
+    margin-bottom: 20px;
+}
+
+.bet-options {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.bet-button {
+    padding: 15px 25px;
+    background-color: #2980b9;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.bet-button:hover {
+    background-color: #3498db;
+}
+
+.bet-input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #bdc3c7;
+    font-size: 1rem;
+}
+
+.game-board {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+}
+
+.hand {
+    text-align: center;
+    width: 45%;
+}
+
+.cards {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+    animation: fadeIn 0.5s ease;
+}
+
+.card {
+    width: 70px;
+    height: 100px;
+    margin: 5px;
+    background-color: #e74c3c;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.score {
+    margin-top: 10px;
+    font-size: 1.2rem;
+}
+
+.deal-button {
+    padding: 15px 30px;
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.deal-button:hover {
+    background-color: #2ecc71;
+}
+
+.result {
+    font-size: 1.5rem;
+    text-align: center;
+    font-weight: 700;
+    color: #e74c3c;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes cardFlip {
+    0% {
+        transform: rotateY(0deg);
+    }
+    100% {
+        transform: rotateY(180deg);
+    }
+}
+
+.animations {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 0;
+    height: 0;
+}
+
+.animation-card {
+    width: 70px;
+    height: 100px;
+    background-color: #f39c12;
+    margin: 5px;
+    border-radius: 5px;
+    position: absolute;
+    animation: cardFlip 1s forwards;
+}

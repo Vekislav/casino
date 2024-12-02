@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baccarat Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="main-container">
+        <header>
+            <h1>Baccarat by Casino</h1>
+            <div class="balance-container">
+                <span>Balance: $<span id="balance">1000</span></span>
+            </div>
+        </header>
+        
+        <section class="bet-section">
+            <div class="bet-options">
+                <button class="bet-button" onclick="placeBet('player')">Bet on Player</button>
+                <button class="bet-button" onclick="placeBet('banker')">Bet on Banker</button>
+            </div>
+            <input type="number" id="betAmount" placeholder="Enter bet amount" class="bet-input" />
+        </section>
+
+        <div class="game-board">
+            <div class="hand" id="player-hand">
+                <h2>Player</h2>
+                <div class="cards" id="player-cards"></div>
+                <div id="player-score" class="score">Score: 0</div>
+            </div>
+            <div class="hand" id="banker-hand">
+                <h2>Banker</h2>
+                <div class="cards" id="banker-cards"></div>
+                <div id="banker-score" class="score">Score: 0</div>
+            </div>
+        </div>
+
+        <button id="deal-btn" class="deal-button" onclick="dealCards()">Deal Cards</button>
+        <div id="result" class="result"></div>
+    </div>
+
+    <div id="animations" class="animations"></div>
+    
+    <script src="app.js"></script>
+</body>
+</html>

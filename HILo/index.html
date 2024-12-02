@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hi-Lo by @svejeveki</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <h1>Hi-Low DEMO (MAX RTP)</h1>
+        <div class="balance-display">Balance: $<span id="balance"></span></div>
+        <div class="difficulty-selector">
+            <label for="difficulty">Difficulty: </label>
+            <select id="difficulty">
+                <option value="1.2">Easy</option>
+                <option value="1.5">Medium</option>
+                <option value="2.0">Hard</option>
+            </select>
+        </div>
+        <div class="betting">
+            <input type="number" id="bet" placeholder="Enter your bet" min="1">
+            <button id="start-game">Start Game</button>
+        </div>
+        <div id="game-area" class="hidden">
+            <div class="card-display">
+                <div class="card" id="current-card"></div>
+                <p>Will the next card be higher or lower?</p>
+                <button class="action-btn" id="higher-btn">Higher</button>
+                <button class="action-btn" id="lower-btn">Lower</button>
+            </div>
+            <div class="multiplier-display">Current Multiplier: <span id="multiplier">1.00</span></div>
+            <button id="cashout" class="hidden">Cash Out</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
