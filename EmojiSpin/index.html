@@ -40,7 +40,8 @@
       text-align: center;
     }
 
-    .balance {
+    .balance,
+    .jackpot {
       margin-bottom: 20px;
       font-size: 1.2rem;
     }
@@ -67,6 +68,7 @@
   </style>
 </head>
 <body>
+  <div class="jackpot">Jackpot: <span id="jackpot">$0</span></div>
   <div class="balance">Balance: <span id="balance">$100</span></div>
   <div class="slot-machine">
     <div class="slot" id="slot1">E</div>
@@ -85,6 +87,7 @@
 
   <script>
     const balanceElement = document.getElementById("balance");
+    const jackpotElement = document.getElementById("jackpot");
     const betSizeInput = document.getElementById("betSize");
     const spinButton = document.getElementById("spinButton");
     const autoBetButton = document.getElementById("autoBetButton");
@@ -99,10 +102,16 @@
 
     const emojis = ["🔥", "🍋", "⭐", "🍒", "🍇"];
     let balance = localStorage.getItem("slotBalance") ? parseInt(localStorage.getItem("slotBalance")) : 100;
+    let jackpot = localStorage.getItem("slotJackpot") ? parseInt(localStorage.getItem("slotJackpot")) : 0;
 
     function updateBalance() {
       balanceElement.textContent = `$${balance}`;
       localStorage.setItem("slotBalance", balance);
+    }
+
+    function updateJackpot() {
+      jackpotElement.textContent = `$${jackpot}`;
+      localStorage.setItem("slotJackpot", jackpot);
     }
 
     function spin() {
@@ -130,23 +139,27 @@
       // Check win conditions
       const frequencies = Object.values(emojiCount);
       if (frequencies.includes(5)) {
-        // Jackpot: 5 matching emojis
-        const winnings = bet * 1000;
+        // Jackpot win: 5 matching emojis
+        const winnings = bet * 1000 + jackpot;
+        alert(`Jackpot! You won $${winnings} (including the jackpot of $${jackpot})`);
         balance += winnings;
-        alert(`Jackpot! You won $${winnings}`);
+        jackpot = 0; // Reset jackpot
       } else if (frequencies.includes(4)) {
         // 4 matching emojis
-        const winnings = bet * 20;
+        const winnings = bet * 75;
         balance += winnings;
+        jackpot += Math.floor(winnings * 0.5); // Add 50% of winnings to jackpot
         alert(`Great win! 4 matching emojis, you won $${winnings}`);
       } else if (frequencies.includes(3)) {
         // 3 matching emojis
-        const winnings = bet * 0.75;
+        const winnings = bet * 5;
         balance += winnings;
+        jackpot += Math.floor(winnings * 0.5); // Add 50% of winnings to jackpot
         alert(`Nice! 3 matching emojis, you won $${winnings}`);
       }
 
       updateBalance();
+      updateJackpot();
     }
 
     function startAutoBet() {
@@ -162,12 +175,24 @@
 
         spin();
         remainingBets--;
-      }, 700); // by Adjust delay as needed
+      }, 500); // Adjust delay as needed
+    }
+
+    function randomizeJackpot() {
+      const randomIncrease = Math.floor(Math.random() * 150) + 1; // $1-$150
+      jackpot += randomIncrease;
+      updateJackpot();
+
+      const randomDelay = Math.floor(Math.random() * 10000) + 5000; // 5-15 seconds
+      setTimeout(randomizeJackpot, randomDelay);
     }
 
     spinButton.addEventListener("click", spin);
     autoBetButton.addEventListener("click", startAutoBet);
+
     updateBalance();
+    updateJackpot();
+    randomizeJackpot(); // Start the jackpot randomizer
   </script>
 </body>
 </html>
