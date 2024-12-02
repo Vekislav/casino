@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emoji Spin - Jackpot</title>
+  <style>
+    body {
+      background-color: #111;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .slot-machine {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .slot {
+      width: 85px;
+      height: 85px;
+      background-color: #222;
+      border: 2px solid #444;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin: 0 10px;
+    }
+
+    .controls {
+      text-align: center;
+    }
+
+    .balance,
+    .jackpot {
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+    }
+
+    button {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 25px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    button.stop {
+      background-color: #dc3545;
+    }
+
+    button.stop:hover {
+      background-color: #c82333;
+    }
+
+    input {
+      width: 100px;
+      text-align: center;
+      margin-right: 10px;
+      padding: 5px;
+      border: 1px solid #444;
+      border-radius: 5px;
+      background-color: #222;
+      color: white;
+    }
+
+    /* Win result display */
+    .win-result {
+      position: absolute;
+      top: 50px; /* Adjust as necessary */
+      font-size: 1.5rem;
+      color: yellow;
+      font-weight: bold;
+      padding: 10px;
+      border-radius: 10px;
+      background-color: rgba(0, 0, 0, 0.7);
+      visibility: hidden; /* Initially hidden */
+      opacity: 0;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="jackpot">Jackpot: <span id="jackpot">$0</span></div>
+  <div class="balance">Balance: <span id="balance">$100</span></div>
+  <div class="win-result" id="winResult"></div> <!-- Placeholder for win result -->
+  <div class="slot-machine">
+    <div class="slot" id="slot1">E</div>
+    <div class="slot" id="slot2">M</div>
+    <div class="slot" id="slot3">O</div>
+    <div class="slot" id="slot4">J</div>
+    <div class="slot" id="slot5">I</div>
+  </div>
+  <div class="controls">
+    <input type="number" id="betSize" placeholder="Bet Size" min="1" value="1">
+    <button id="spinButton">Spin</button>
+    <br>
+    <input type="number" id="autoBetCount" placeholder="Auto Bets">
+    <button id="autoBetButton">Start AutoBet</button>
+    <button id="stopAutoBetButton" class="stop">Stop AutoBet</button>
+  </div>
+
+  <script>
+    const balanceElement = document.getElementById("balance");
+    const jackpotElement = document.getElementById("jackpot");
+    const betSizeInput = document.getElementById("betSize");
+    const spinButton = document.getElementById("spinButton");
+    const autoBetButton = document.getElementById("autoBetButton");
+    const stopAutoBetButton = document.getElementById("stopAutoBetButton");
+    const autoBetCountInput = document.getElementById("autoBetCount");
+    const slots = [
+      document.getElementById("slot1"),
+      document.getElementById("slot2"),
+      document.getElementById("slot3"),
+      document.getElementById("slot4"),
+      document.getElementById("slot5"),
+    ];
+    const winResultElement = document.getElementById("winResult");
+
+    const emojis = ["🐶", "🐕", "🐩", "🦮", "🦴", "🌭", "🐺", "⚾", "🐿️"];
+    let balance = localStorage.getItem("slotBalance") ? parseInt(localStorage.getItem("slotBalance")) : 100;
+    let jackpot = localStorage.getItem("slotJackpot") ? parseInt(localStorage.getItem("slotJackpot")) : 0;
+    let autoBetInterval = null;
+
+    function updateBalance() {
+      balanceElement.textContent = `$${balance}`;
+      localStorage.setItem("slotBalance", balance);
+    }
+
+    function updateJackpot() {
+      jackpotElement.textContent = `$${jackpot}`;
+      localStorage.setItem("slotJackpot", jackpot);
+    }
+
+    function randomizeSlot(slot) {
+      return new Promise((resolve) => {
+        const animationInterval = setInterval(() => {
+          const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+          slot.textContent = randomEmoji;
+        }, 50);
+
+        setTimeout(() => {
+          clearInterval(animationInterval);
+          resolve();
+        }, Math.random() * 50 + 100); // Random duration between 300ms to 500ms
+      });
+    }
+
+    function showWinResult(message) {
+      winResultElement.textContent = message;
+      winResultElement.style.visibility = "visible";
+      winResultElement.style.opacity = "1";
+
+      // Fade out the result after 2 seconds
+      setTimeout(() => {
+        winResultElement.style.opacity = "0";
+        setTimeout(() => {
+          winResultElement.style.visibility = "hidden";
+        }, 500); // Match the fade-out duration
+      }, 2000);
+    }
+
+    async function spin() {
+      const bet = parseInt(betSizeInput.value);
+      if (isNaN(bet) || bet < 0 || bet > balance) {
+        showWinResult("Invalid bet size.");
+        return;
+      }
+
+      balance -= bet;
+      updateBalance();
+
+      // Animate each slot
+      for (const slot of slots) {
+        await randomizeSlot(slot);
+      }
+
+      const results = slots.map((slot) => slot.textContent);
+
+      // Calculate emoji frequency
+      const emojiCount = {};
+      results.forEach((emoji) => {
+        emojiCount[emoji] = (emojiCount[emoji] || 0) + 1;
+      });
+
+      // Check win conditions
+      const frequencies = Object.values(emojiCount);
+      if (frequencies.includes(5)) {
+        // Jackpot win: 5 matching emojis
+        const winnings = bet * 3000 + jackpot;
+        showWinResult(`Jackpot! You won $${winnings} (including the jackpot of $${jackpot})`);
+        balance += winnings;
+        jackpot = 0; // Reset jackpot
+      } else if (frequencies.includes(4)) {
+        const winnings = bet * 50;
+        balance += winnings;
+        jackpot += Math.floor(winnings * 0.5);
+        showWinResult(`Great win! 4 matching emojis, you won $${winnings}`);
+      } else if (frequencies.includes(3)) {
+        const winnings = bet * 2;
+        balance += winnings;
+        jackpot += Math.floor(winnings * 0.5);
+        showWinResult(`Nice! 3 matching emojis, you won $${winnings}`);
+      } else {
+        showWinResult("No win this time. Try again!");
+      }
+
+      updateBalance();
+      updateJackpot();
+    }
+
+    function startAutoBet() {
+      let remainingBets = parseInt(autoBetCountInput.value);
+      if (isNaN(remainingBets)) remainingBets = Infinity;
+
+      autoBetInterval = setInterval(() => {
+        if (balance <= 0 || remainingBets <= 0) {
+          stopAutoBet();
+          return;
+        }
+        spin();
+        remainingBets--;
+      }, 1000);
+    }
+
+    function stopAutoBet() {
+      if (autoBetInterval) {
+        clearInterval(autoBetInterval);
+        autoBetInterval = null;
+        showWinResult("AutoBet stopped!");
+      }
+    }
+
+    spinButton.addEventListener("click", spin);
+    autoBetButton.addEventListener("click", startAutoBet);
+    stopAutoBetButton.addEventListener("click", stopAutoBet);
+
+    updateBalance();
+    updateJackpot();
+  </script>
+</body>
+</html>
