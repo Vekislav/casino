@@ -1,6 +1,4 @@
 <!DOCTYPE html>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1792431362624918"
-     crossorigin="anonymous"></script>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -80,12 +78,17 @@
   <div class="controls">
     <input type="number" id="betSize" placeholder="Bet Size" min="1" value="1">
     <button id="spinButton">Spin</button>
+    <br>
+    <input type="number" id="autoBetCount" placeholder="Auto Bets">
+    <button id="autoBetButton">Start AutoBet</button>
   </div>
 
   <script>
     const balanceElement = document.getElementById("balance");
     const betSizeInput = document.getElementById("betSize");
     const spinButton = document.getElementById("spinButton");
+    const autoBetButton = document.getElementById("autoBetButton");
+    const autoBetCountInput = document.getElementById("autoBetCount");
     const slots = [
       document.getElementById("slot1"),
       document.getElementById("slot2"),
@@ -118,17 +121,52 @@
         results.push(randomEmoji);
       });
 
-      // Simple win condition: all slots match
-      if (new Set(results).size === 1) {
-        const winnings = bet * 1000; // Example: 10x payout
+      // Calculate emoji frequency
+      const emojiCount = {};
+      results.forEach((emoji) => {
+        emojiCount[emoji] = (emojiCount[emoji] || 0) + 1;
+      });
+
+      // Check win conditions
+      const frequencies = Object.values(emojiCount);
+      if (frequencies.includes(5)) {
+        // Jackpot: 5 matching emojis
+        const winnings = bet * 1000;
         balance += winnings;
         alert(`Jackpot! You won $${winnings}`);
+      } else if (frequencies.includes(4)) {
+        // 4 matching emojis
+        const winnings = bet * 75;
+        balance += winnings;
+        alert(`Great win! 4 matching emojis, you won $${winnings}`);
+      } else if (frequencies.includes(3)) {
+        // 3 matching emojis
+        const winnings = bet * 5;
+        balance += winnings;
+        alert(`Nice! 3 matching emojis, you won $${winnings}`);
       }
 
       updateBalance();
     }
 
+    function startAutoBet() {
+      let remainingBets = parseInt(autoBetCountInput.value);
+      if (isNaN(remainingBets)) remainingBets = Infinity;
+
+      const interval = setInterval(() => {
+        if (balance <= 0 || remainingBets <= 0) {
+          clearInterval(interval);
+          alert("AutoBet stopped!");
+          return;
+        }
+
+        spin();
+        remainingBets--;
+      }, 200); // by Adjust delay as needed
+    }
+
     spinButton.addEventListener("click", spin);
+    autoBetButton.addEventListener("click", startAutoBet);
     updateBalance();
   </script>
 </body>
