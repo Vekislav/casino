@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Emoji Spin - Original</title>
+  <title>Emoji Spin - Jackpot</title>
   <style>
     body {
       background-color: #111;
@@ -43,27 +43,42 @@
     .balance,
     .jackpot {
       margin-bottom: 20px;
-      font-size: 1.2rem;
+      font-size: 1.5rem;
     }
 
     button {
-      background-color: #333;
+      background-color: #28a745;
       color: white;
       border: none;
       padding: 10px 20px;
       margin: 5px;
-      border-radius: 5px;
+      border-radius: 25px;
+      font-size: 1rem;
       cursor: pointer;
+      transition: background-color 0.3s ease;
     }
 
     button:hover {
-      background-color: #555;
+      background-color: #218838;
+    }
+
+    button.stop {
+      background-color: #dc3545;
+    }
+
+    button.stop:hover {
+      background-color: #c82333;
     }
 
     input {
       width: 100px;
       text-align: center;
       margin-right: 10px;
+      padding: 5px;
+      border: 1px solid #444;
+      border-radius: 5px;
+      background-color: #222;
+      color: white;
     }
   </style>
 </head>
@@ -83,6 +98,7 @@
     <br>
     <input type="number" id="autoBetCount" placeholder="Auto Bets">
     <button id="autoBetButton">Start AutoBet</button>
+    <button id="stopAutoBetButton" class="stop">Stop AutoBet</button>
   </div>
 
   <script>
@@ -91,6 +107,7 @@
     const betSizeInput = document.getElementById("betSize");
     const spinButton = document.getElementById("spinButton");
     const autoBetButton = document.getElementById("autoBetButton");
+    const stopAutoBetButton = document.getElementById("stopAutoBetButton");
     const autoBetCountInput = document.getElementById("autoBetCount");
     const slots = [
       document.getElementById("slot1"),
@@ -100,9 +117,10 @@
       document.getElementById("slot5"),
     ];
 
-    const emojis = ["🔥", "🍋", "⭐", "🍒", "🍇", "🎰", "🎱", "🥇", "🎖️", "🥉", "🥈"];
+    const emojis = ["🔥", "🍋", "⭐", "🍒", "🍇", "🥇", "🥈", "🥉", "🎱", "🎖️", "🎰"];
     let balance = localStorage.getItem("slotBalance") ? parseInt(localStorage.getItem("slotBalance")) : 100;
     let jackpot = localStorage.getItem("slotJackpot") ? parseInt(localStorage.getItem("slotJackpot")) : 0;
+    let autoBetInterval = null;
 
     function updateBalance() {
       balanceElement.textContent = `$${balance}`;
@@ -114,7 +132,21 @@
       localStorage.setItem("slotJackpot", jackpot);
     }
 
-    function spin() {
+    function randomizeSlot(slot) {
+      return new Promise((resolve) => {
+        const animationInterval = setInterval(() => {
+          const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+          slot.textContent = randomEmoji;
+        }, 50);
+
+        setTimeout(() => {
+          clearInterval(animationInterval);
+          resolve();
+        }, Math.random() * 200 + 300); // Random duration between 300ms to 500ms
+      });
+    }
+
+    async function spin() {
       const bet = parseInt(betSizeInput.value);
       if (isNaN(bet) || bet < 0 || bet > balance) {
         alert("Invalid bet size.");
@@ -122,13 +154,14 @@
       }
 
       balance -= bet;
+      updateBalance();
 
-      const results = [];
-      slots.forEach((slot) => {
-        const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
-        slot.textContent = randomEmoji;
-        results.push(randomEmoji);
-      });
+      // Animate each slot
+      for (const slot of slots) {
+        await randomizeSlot(slot);
+      }
+
+      const results = slots.map((slot) => slot.textContent);
 
       // Calculate emoji frequency
       const emojiCount = {};
@@ -145,16 +178,14 @@
         balance += winnings;
         jackpot = 0; // Reset jackpot
       } else if (frequencies.includes(4)) {
-        // 4 matching emojis
         const winnings = bet * 75;
         balance += winnings;
-        jackpot += Math.floor(winnings * 0.5); // Add 50% of winnings to jackpot
+        jackpot += Math.floor(winnings * 0.5);
         alert(`Great win! 4 matching emojis, you won $${winnings}`);
       } else if (frequencies.includes(3)) {
-        // 3 matching emojis
         const winnings = bet * 5;
         balance += winnings;
-        jackpot += Math.floor(winnings * 0.5); // Add 50% of winnings to jackpot
+        jackpot += Math.floor(winnings * 0.5);
         alert(`Nice! 3 matching emojis, you won $${winnings}`);
       }
 
@@ -166,16 +197,22 @@
       let remainingBets = parseInt(autoBetCountInput.value);
       if (isNaN(remainingBets)) remainingBets = Infinity;
 
-      const interval = setInterval(() => {
+      autoBetInterval = setInterval(() => {
         if (balance <= 0 || remainingBets <= 0) {
-          clearInterval(interval);
-          alert("AutoBet stopped!");
+          stopAutoBet();
           return;
         }
-
         spin();
         remainingBets--;
-      }, 500); // Adjust delay as needed
+      }, 1000);
+    }
+
+    function stopAutoBet() {
+      if (autoBetInterval) {
+        clearInterval(autoBetInterval);
+        autoBetInterval = null;
+        alert("AutoBet stopped!");
+      }
     }
 
     function randomizeJackpot() {
@@ -186,22 +223,14 @@
       const randomDelay = Math.floor(Math.random() * 10000) + 5000; // 5-15 seconds
       setTimeout(randomizeJackpot, randomDelay);
     }
-        function randomizeJackpotmini() {
-      const randomIncrease = Math.floor(Math.random() * 10) + 1; // $1-$150
-      jackpot += randomIncrease;
-      updateJackpot();
-
-      const randomDelay = Math.floor(Math.random() * 1000) + 5000; // 5-15 seconds
-      setTimeout(randomizeJackpot, randomDelay);
-    }
 
     spinButton.addEventListener("click", spin);
     autoBetButton.addEventListener("click", startAutoBet);
+    stopAutoBetButton.addEventListener("click", stopAutoBet);
 
     updateBalance();
     updateJackpot();
-    randomizeJackpot(); // Start the jackpot randomizer
-    randomizeJackpotmini
+    randomizeJackpot();
   </script>
 </body>
 </html>
