@@ -1,0 +1,168 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #2c3e50, #4ca1af);
+    color: white;
+    overflow: hidden;
+}
+
+#game-container {
+    display: flex;
+    width: 90%;
+    max-width: 1000px;
+    justify-content: space-between;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+}
+
+#controls {
+    width: 300px;
+    padding: 20px;
+    background: #2b3e50;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+h2 {
+    margin-bottom: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #f39c12;
+}
+
+input {
+    padding: 10px;
+    width: 80%;
+    margin: 10px 0;
+    border: 2px solid #f39c12;
+    border-radius: 5px;
+    background: #34495e;
+    color: white;
+    font-size: 18px;
+    transition: border-color 0.3s;
+}
+
+input:focus {
+    outline: none;
+    border-color: #ecf0f1;
+}
+
+button {
+    padding: 10px 20px;
+    width: 80%;
+    background: #f39c12;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background: #e67e22;
+}
+
+button:disabled {
+    background: #7f8c8d;
+    cursor: not-allowed;
+}
+
+.hidden {
+    display: none;
+}
+
+#game-display {
+    position: relative;
+    width: 70%;
+    height: 400px;
+    background: #34495e;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.6);
+}
+
+#rocket {
+    position: absolute;
+    font-size: 4rem;
+    bottom: 0;
+    transform-origin: center;
+    animation: wiggle 0.2s alternate infinite;
+}
+
+@keyframes wiggle {
+    0% { transform: rotate(0deg); }
+    50% { transform: rotate(10deg); }
+    100% { transform: rotate(-10deg); }
+}
+
+#particles-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.particle {
+    position: absolute;
+    background-color: white;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    animation: moveParticle 3s linear infinite;
+}
+
+
+@keyframes moveParticle {
+    0% {
+        transform: translateY(0) translateX(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100px) translateX(100px);
+        opacity: 0;
+    }
+}
+
+#countdown {
+    font-size: 36px;
+    margin-top: 20px;
+}
+
+#status-message {
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+#multiplier {
+    font-size: 36px;
+    font-weight: bold;
+    margin-top: 20px;
+    color: #f39c12;
+}
+
+#money-won {
+    font-size: 18px;
+    font-weight: bold;
+    color: #2ecc71;
+    margin-top: 10px;
+}

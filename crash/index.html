@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crash Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- Left Panel (Controls) -->
+        <div id="controls">
+            <h2>Crash Game</h2>
+            <p>Balance: $<span id="balance">1000</span></p>
+            <div>
+                <input type="number" id="bet-input" placeholder="Enter your bet" />
+                <button id="place-bet">Place Bet</button>
+            </div>
+            <button id="cashout" class="hidden">Cash Out</button>
+            <p id="status-message">Waiting for next round...</p>
+            <p id="multiplier">0x</p>
+            <p id="countdown" class="hidden">7</p>
+            <p id="money-won" class="hidden">+0</p>
+        </div>
+
+        <!-- Right Panel (Game display) -->
+        <div id="game-display">
+            <div id="rocket" class="rocket">🚀</div>
+            <div id="particles-container"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
