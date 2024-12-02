@@ -100,7 +100,7 @@
       document.getElementById("slot5"),
     ];
 
-    const emojis = ["🔥", "🍋", "⭐", "🍒", "🍇"];
+    const emojis = ["🔥", "🍋", "⭐", "🍒", "🍇", "🎰", "🎱"];
     let balance = localStorage.getItem("slotBalance") ? parseInt(localStorage.getItem("slotBalance")) : 100;
     let jackpot = localStorage.getItem("slotJackpot") ? parseInt(localStorage.getItem("slotJackpot")) : 0;
 
@@ -201,6 +201,7 @@
     updateBalance();
     updateJackpot();
     randomizeJackpot(); // Start the jackpot randomizer
+    randomizeJackpotmini
   </script>
 </body>
 </html>
