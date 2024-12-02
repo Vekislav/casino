@@ -186,6 +186,14 @@
       const randomDelay = Math.floor(Math.random() * 10000) + 5000; // 5-15 seconds
       setTimeout(randomizeJackpot, randomDelay);
     }
+        function randomizeJackpotmini() {
+      const randomIncrease = Math.floor(Math.random() * 10) + 1; // $1-$150
+      jackpot += randomIncrease;
+      updateJackpot();
+
+      const randomDelay = Math.floor(Math.random() * 1000) + 5000; // 5-15 seconds
+      setTimeout(randomizeJackpot, randomDelay);
+    }
 
     spinButton.addEventListener("click", spin);
     autoBetButton.addEventListener("click", startAutoBet);
