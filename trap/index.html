@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Photo Spin - Jackpot</title>
+  <style>
+    body {
+      background-color: #111;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .slot-machine {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .slot {
+      width: 85px;
+      height: 85px;
+      background-color: #222;
+      border: 2px solid #444;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 10px;
+      overflow: hidden;
+    }
+
+    .slot img {
+      width: 64px;
+      height: 64px;
+    }
+
+    .controls {
+      text-align: center;
+    }
+
+    .balance,
+    .jackpot {
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+    }
+
+    button {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 25px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    button.stop {
+      background-color: #dc3545;
+    }
+
+    button.stop:hover {
+      background-color: #c82333;
+    }
+
+    input {
+      width: 100px;
+      text-align: center;
+      margin-right: 10px;
+      padding: 5px;
+      border: 1px solid #444;
+      border-radius: 5px;
+      background-color: #222;
+      color: white;
+    }
+
+    .win-result {
+      position: absolute;
+      top: 50px;
+      font-size: 1.5rem;
+      color: yellow;
+      font-weight: bold;
+      padding: 10px;
+      border-radius: 10px;
+      background-color: rgba(0, 0, 0, 0.7);
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="jackpot">Jackpot: <span id="jackpot">$0</span></div>
+  <div class="balance">Balance: <span id="balance">$100</span></div>
+  <div class="win-result" id="winResult"></div>
+  <div class="slot-machine">
+    <div class="slot" id="slot1"><img src="" alt="slot"></div>
+    <div class="slot" id="slot2"><img src="" alt="slot"></div>
+    <div class="slot" id="slot3"><img src="" alt="slot"></div>
+    <div class="slot" id="slot4"><img src="" alt="slot"></div>
+    <div class="slot" id="slot5"><img src="" alt="slot"></div>
+  </div>
+  <div class="controls">
+    <input type="number" id="betSize" placeholder="Bet Size" min="1" value="1">
+    <button id="spinButton">Spin</button>
+    <br>
+    <input type="number" id="autoBetCount" placeholder="Auto Bets">
+    <button id="autoBetButton">Start AutoBet</button>
+    <button id="stopAutoBetButton" class="stop">Stop AutoBet</button>
+  </div>
+
+  <script>
+    const balanceElement = document.getElementById("balance");
+    const jackpotElement = document.getElementById("jackpot");
+    const betSizeInput = document.getElementById("betSize");
+    const spinButton = document.getElementById("spinButton");
+    const autoBetButton = document.getElementById("autoBetButton");
+    const stopAutoBetButton = document.getElementById("stopAutoBetButton");
+    const autoBetCountInput = document.getElementById("autoBetCount");
+    const slots = [
+      document.getElementById("slot1").querySelector("img"),
+      document.getElementById("slot2").querySelector("img"),
+      document.getElementById("slot3").querySelector("img"),
+      document.getElementById("slot4").querySelector("img"),
+      document.getElementById("slot5").querySelector("img"),
+    ];
+    const winResultElement = document.getElementById("winResult");
+
+    const images = [
+      "https://yt3.googleusercontent.com/4DoHpse0kBXWRiK2R7HVuBhygRTfjlr1D7LBpdFxnQ_rium2tQzK4PtwfqFJNUZi-BxTSfDHfg=s900-c-k-c0x00ffffff-no-rj",
+      "https://www.muzika.hr/wp-content/uploads/2020/04/4e0d052c2874669dbee1f8a18b2a0565.1000x1000x1.jpg",
+      "https://glazba.hr/wp-content/uploads/2023/02/014A5253.jpg",
+      "https://glazba.hr/wp-content/uploads/2023/02/014A2443-683x1024.jpg"
+    ];
+
+    let balance = 100;
+    let jackpot = 0;
+    let autoBetInterval = null;
+
+    function updateBalance() {
+      balanceElement.textContent = `$${balance}`;
+    }
+
+    function updateJackpot() {
+      jackpotElement.textContent = `$${jackpot}`;
+    }
+
+    function randomizeSlot(slot) {
+      return new Promise((resolve) => {
+        const animationInterval = setInterval(() => {
+          const randomImage = images[Math.floor(Math.random() * images.length)];
+          slot.src = randomImage;
+        }, 50);
+
+        setTimeout(() => {
+          clearInterval(animationInterval);
+          resolve();
+        }, Math.random() * 50 + 100);
+      });
+    }
+
+    async function spin() {
+      const bet = parseInt(betSizeInput.value);
+      if (isNaN(bet) || bet < 1 || bet > balance) {
+        winResultElement.textContent = "Invalid bet size.";
+        return;
+      }
+
+      balance -= bet;
+      updateBalance();
+
+      for (const slot of slots) {
+        await randomizeSlot(slot);
+      }
+
+      const results = slots.map((slot) => slot.src);
+      const counts = {};
+      results.forEach((src) => counts[src] = (counts[src] || 0) + 1);
+
+      if (Object.values(counts).includes(5)) {
+        const winnings = bet * 1000 + jackpot;
+        balance += winnings;
+        jackpot = 0;
+        winResultElement.textContent = `Jackpot! You won $${winnings}`;
+      } else {
+        winResultElement.textContent = "No win this time.";
+      }
+
+      updateBalance();
+      updateJackpot();
+    }
+
+    spinButton.addEventListener("click", spin);
+  </script>
+</body>
+</html>
