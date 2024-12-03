@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const countdownDisplay = document.getElementById("countdown");
     const particlesContainer = document.getElementById("particles-container");
 
-    let balance = parseInt(localStorage.getItem("slotBalance")) || 1000;
+    let balance = parseInt(localStorage.getItem("vekiB")) || 1000;
     let betAmount = 0;
     let currentMultiplier = 0;
     let gameInterval = null;
